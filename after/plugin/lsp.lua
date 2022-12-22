@@ -26,11 +26,13 @@ lsp.set_preferences({
 	}
 })
 require'lspconfig'.intelephense.setup {
+	settings = {
 	intelephense = {
 			format = {
 				braces = 'k&r'
 			}
 	}
+}
 }
 
 lsp.on_attach(function(client, bufnr)
