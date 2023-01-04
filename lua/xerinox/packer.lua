@@ -15,6 +15,7 @@ return require('packer').startup(function(use)
 		end
 	}
 	use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
+	use('nvim-treesitter/nvim-treesitter-textobjects')
 	use('nvim-treesitter/playground')
 	use('theprimeagen/harpoon')
 	use('mbbill/undotree')
@@ -152,13 +153,6 @@ return require('packer').startup(function(use)
 	--}
 	--end
 	--}
-	use({
-		"Pocco81/true-zen.nvim",
-		config = function()
-			require("true-zen").setup {
-			}
-		end,
-	})
 
 	use({
 		"mg979/vim-visual-multi",
