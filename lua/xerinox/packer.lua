@@ -20,6 +20,15 @@ return require('packer').startup(function(use)
 	use('theprimeagen/harpoon')
 	use('mbbill/undotree')
 	use('tpope/vim-fugitive')
+	use({
+		"kylechui/nvim-surround",
+		tag = "*",
+		config = function()
+			require("nvim-surround").setup({
+			})
+		end
+	})
+
 
 	use {
 		'VonHeikemen/lsp-zero.nvim',
