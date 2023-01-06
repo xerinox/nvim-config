@@ -1,5 +1,5 @@
 function ColorMyPencils(color)
-	color = color or "oxocarbon"
+	color = color or "catppuccin-latte"
 	vim.cmd.colorscheme(color)
 	vim.opt.background = "dark"
 

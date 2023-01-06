@@ -10,11 +10,16 @@ return require('packer').startup(function(use)
 			require("telescope").load_extension("lazygit")
 		end,
 	}
-	use {
-		'nyoom-engineering/oxocarbon.nvim',
-		as = 'oxocarbon',
-		config = function()
-			vim.cmd('colorscheme oxocarbon')
+	--use {
+		--'nyoom-engineering/oxocarbon.nvim',
+		--as = 'oxocarbon',
+		--config = function()
+			--vim.cmd('colorscheme oxocarbon')
+		--end
+	--}
+	use { 'catppuccin/nvim', as ='catppuccin',
+		config = function ()
+			vim.cmd('colorscheme catppuccin-latte')
 		end
 	}
 	use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
