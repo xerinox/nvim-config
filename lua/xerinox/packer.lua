@@ -168,4 +168,8 @@ return require('packer').startup(function(use)
 		branch = 'master',
 	})
 	use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'}
+	use {'mfussenegger/nvim-dap'}
+	use {'rcarriga/nvim-dap-ui'}
+	use {'theHamsta/nvim-dap-virtual-text'}
+	use {'nvim-telescope/telescope-dap.nvim'}
 end)
