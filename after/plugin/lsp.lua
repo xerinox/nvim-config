@@ -34,6 +34,16 @@ require 'lspconfig'.intelephense.setup {
 		}
 	}
 }
+lsp.configure('sumneko_lua', {
+	settings = {
+		Lua = {
+			diagnostics = {
+				globals = {'vim'}
+			}
+		}
+	}
+})
+
 
 lsp.on_attach(function(client, bufnr)
 	local opts = { buffer = bufnr, remap = false }
