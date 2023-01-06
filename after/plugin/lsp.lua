@@ -25,7 +25,7 @@ lsp.set_preferences({
 		info = ''
 	}
 })
-require 'lspconfig'.intelephense.setup {
+lsp.configure('intelephense', {
 	settings = {
 		intelephense = {
 			format = {
@@ -33,12 +33,13 @@ require 'lspconfig'.intelephense.setup {
 			}
 		}
 	}
-}
+})
+
 lsp.configure('sumneko_lua', {
 	settings = {
 		Lua = {
 			diagnostics = {
-				globals = {'vim'}
+				globals = { 'vim' }
 			}
 		}
 	}
