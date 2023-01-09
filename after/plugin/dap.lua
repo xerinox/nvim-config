@@ -19,9 +19,11 @@ dap.configurations.php = {
 		type = 'php',
 		request = 'launch',
 		name = 'Listen for Xdebug',
-		post = 9000,
+		port = 9001,
 		pathMappings = {
-			["/var/www/html"] = "${workspaceFolder}"
+			["/opt/app-root/www"] = "${workspaceFolder}/site_root",
+			["/opt/app-root/www/"] = "${workspaceFolder}/site_root/",
+			["/opt/app-root/www/**"] = "${workspaceFolder}/site_root/**",
 		}
 	}
 }
