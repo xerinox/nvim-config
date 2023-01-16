@@ -21,9 +21,9 @@ dap.configurations.php = {
 		name = 'Listen for Xdebug',
 		port = 9001,
 		pathMappings = {
-			["/opt/app-root/www"] = "${workspaceFolder}/site_root",
-			["/opt/app-root/www/"] = "${workspaceFolder}/site_root/",
-			["/opt/app-root/www/**"] = "${workspaceFolder}/site_root/**",
+			["/opt/app-root/www"] = "/home/xerinox/websites/opscomV2/site_root",
+			["/opt/app-root/www/"] = "/home/xerinox/websites/opscomV2/site_root/",
+			["/opt/app-root/www/**"] = "/home/xerinox/websites/opscomV2/site_root/**",
 		}
 	}
 }

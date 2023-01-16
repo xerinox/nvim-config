@@ -194,4 +194,6 @@ return require('packer').startup(function(use)
 	}
 	use "terrortylor/nvim-comment"
 	use "folke/todo-comments.nvim"
+	use 'timonv/vim-cargo'
+	use 'ThePrimeagen/vim-be-good'
 end)

@@ -41,7 +41,7 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
-function toggle_list()
+function Toggle_list()
 	if vim.o.list == true then
 		vim.o.list = false
 	elseif vim.o.list == false then
@@ -50,7 +50,7 @@ function toggle_list()
 		vim.o.list = false
 	end
 end
-vim.keymap.set('n', '<leader><F5>', ':lua toggle_list()<CR>', {noremap = true, silent = true})
+vim.keymap.set('n', '<leader><F5>', ':lua Toggle_list()<CR>', {noremap = true, silent = true})
 -- greatest remap ever
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
@@ -81,4 +81,6 @@ vim.keymap.set("n", "<F3>", ":lua require'dap'.step_over()<cr>")
 vim.keymap.set("n", "<F5>", ":lua require'dap'.continue()<cr>")
 vim.keymap.set("n", "<leader>b", ":lua require'dap'.toggle_breakpoint()<cr>")
 
+local defaults = { noremap = true, silent = true };
+vim.api.nvim_set_keymap("i", "jk", "<esc>l", defaults);
 vim.keymap.set("n", "<leader><F12>", ":lua require'dapui'.toggle()<cr>")
