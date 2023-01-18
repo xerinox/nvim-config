@@ -9,21 +9,24 @@ if not has_dap_ui then
 end
 
 dap.adapters.php = {
-	type = 'executable',
-	command = 'node',
+	type = "executable",
+	command = "node",
 	args = { os.getenv("HOME") .. "/vscode-php-debug/out/phpDebug.js" }
 }
 
 dap.configurations.php = {
 	{
-		type = 'php',
-		request = 'launch',
-		name = 'Listen for Xdebug',
-		port = 9001,
+		type = "php",
+		request = "launch",
+		name = "Listen for Xdebug",
+		-- localSourceRoot = vim.fn.expand("%:p:h").."/",
+		port = 33333,
+		-- serverSourceRoot = "/opt/app-root/www",
 		pathMappings = {
+			-- ["/opt/app-root/www"] = "${workspaceFolder}/site_root",
+			["/opt/app-root/www/"] = "${workspaceFolder}/site_root/",
+			["/opt/app-root/www/*"] = "${workspaceFolder}/site_root/*",
 			["/opt/app-root/www"] = "/home/xerinox/websites/opscomV2/site_root",
-			["/opt/app-root/www/"] = "/home/xerinox/websites/opscomV2/site_root/",
-			["/opt/app-root/www/**"] = "/home/xerinox/websites/opscomV2/site_root/**",
 		}
 	}
 }
