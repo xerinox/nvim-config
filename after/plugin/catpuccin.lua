@@ -4,7 +4,7 @@ if not present then return end
 catppuccin.setup {
 	flavour = "mocha", -- latte, frappe, macchiato, mocha
 	term_colors = true,
-	transparent_background = false,
+	transparent_background = true,
 	no_italic = false,
 	no_bold = false,
 	styles = {
@@ -20,11 +20,7 @@ catppuccin.setup {
 		properties = {},
 		types = {},
 	},
-	color_overrides = {
-		mocha = {
-			base = "#000000",
-		},
-	},
+	color_overrides = {},
 	highlight_overrides = {
 		mocha = function(C)
 			return {
@@ -81,10 +77,10 @@ catppuccin.setup {
 -- 	},
 -- }
 
-vim.cmd.colorscheme "catppuccin"
+vim.cmd.colorscheme "catppuccin-mocha"
 
 function ColorMyPencils(color)
-	color = color or "catppuccin-latte"
+	color = color or "catppuccin-mocha"
 	vim.cmd.colorscheme(color)
 	vim.opt.background = "dark"
 

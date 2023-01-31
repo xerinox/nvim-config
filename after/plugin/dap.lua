@@ -1,11 +1,11 @@
 local has_dap, dap = pcall(require, "dap")
 if not has_dap then
-  return
+	return
 end
 
 local has_dap_ui, dapui = pcall(require, "dapui")
 if not has_dap_ui then
-  return
+	return
 end
 
 dap.adapters.php = {
@@ -31,18 +31,25 @@ dap.configurations.php = {
 	}
 }
 
-require "nvim-dap-virtual-text".setup {
-  commented = true,
+dap.set_exception_breakpoints({"Error", "Exception", "Warning", "*"})
+
+require("nvim-dap-virtual-text").setup {
+	enabled = true,
+	enabled_commands = true,
+	show_stop_reason = true,
+	commented = true,
 }
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
-  dapui.open()
+	dapui.open()
 end
 
 dap.listeners.before.event_terminated["dapui_config"] = function()
-  dapui.close()
+	dapui.close()
 end
 
 dap.listeners.before.event_exited["dapui_config"] = function()
-  dapui.close()
+	dapui.close()
 end
+
+

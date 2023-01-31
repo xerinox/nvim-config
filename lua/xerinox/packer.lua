@@ -5,23 +5,19 @@ return require('packer').startup(function(use)
 
 	use {
 		'nvim-telescope/telescope.nvim', tag = '0.1.0',
-		requires = { { 'nvim-lua/plenary.nvim' }, { "kdheepak/lazygit.nvim" }},
+		requires = { { 'nvim-lua/plenary.nvim' }, { "kdheepak/lazygit.nvim" } },
 		config = function()
 			require("telescope").load_extension("lazygit")
 		end,
 	}
 	--use {
-		--'nyoom-engineering/oxocarbon.nvim',
-		--as = 'oxocarbon',
-		--config = function()
-			--vim.cmd('colorscheme oxocarbon')
-		--end
+	--'nyoom-engineering/oxocarbon.nvim',
+	--as = 'oxocarbon',
+	--config = function()
+	--vim.cmd('colorscheme oxocarbon')
+	--end
 	--}
-	use { 'catppuccin/nvim', as ='catppuccin',
-		config = function ()
-			vim.cmd('colorscheme catppuccin-latte')
-		end
-	}
+	use { 'catppuccin/nvim', as = 'catppuccin' }
 	use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
 	use('nvim-treesitter/nvim-treesitter-textobjects')
 	use('nvim-treesitter/playground')
@@ -175,25 +171,27 @@ return require('packer').startup(function(use)
 		"mg979/vim-visual-multi",
 		branch = 'master',
 	})
-	use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'}
-	use {'mfussenegger/nvim-dap'}
-	use {'rcarriga/nvim-dap-ui'}
-	use {'theHamsta/nvim-dap-virtual-text'}
-	use {'nvim-telescope/telescope-dap.nvim'}
-	use {'kdheepak/lazygit.nvim'}
+	use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
+	use { 'mfussenegger/nvim-dap' }
+	use { 'rcarriga/nvim-dap-ui' }
+	use { 'theHamsta/nvim-dap-virtual-text' }
+	use { 'nvim-telescope/telescope-dap.nvim' }
+	use { 'kdheepak/lazygit.nvim' }
 	use {
-	  "folke/which-key.nvim",
-	  config = function()
-		vim.o.timeoutlen = 300
-		require("which-key").setup {
-		  -- your configuration comes here
-		  -- or leave it empty to use the default settings
-		  -- refer to the configuration section below
-		}
-	  end
+		"folke/which-key.nvim",
+		config = function()
+			vim.o.timeoutlen = 300
+			require("which-key").setup {
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			}
+		end
 	}
 	use "terrortylor/nvim-comment"
 	use "folke/todo-comments.nvim"
 	use 'timonv/vim-cargo'
 	use 'ThePrimeagen/vim-be-good'
+	use 'nvim-treesitter/nvim-treesitter-context'
+	use { "shortcuts/no-neck-pain.nvim" }
 end)

@@ -69,3 +69,10 @@ require 'nvim-treesitter.configs'.setup {
 		additional_vim_regex_highlighting = false,
 	},
 }
+require('treesitter-context').setup({
+	mode = 'topline',
+	line_numbers = true,
+})
+
+vim.cmd("highlight TreesitterContextBottom gui=underline guisp=#b595dd guibg=#1e1e2e guifg=#89b4fa")
+vim.cmd("highlight ColorColumn guibg=#1e1e2e")
