@@ -1,6 +1,6 @@
 require("no-neck-pain").setup({
 	buffers = {
-		backgroundColor = "#111110",
+		backgroundColor = "#262626",
 		textColor = "#ffffff",
 		scratchPad = {
 			enabled = true,

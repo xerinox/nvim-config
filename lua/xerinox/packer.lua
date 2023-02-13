@@ -194,4 +194,7 @@ return require('packer').startup(function(use)
 	use 'ThePrimeagen/vim-be-good'
 	use 'nvim-treesitter/nvim-treesitter-context'
 	use { "shortcuts/no-neck-pain.nvim" }
+	use {'nvim-lualine/lualine.nvim',
+		requires = { 'kyazdani42/nvim-web-devicons', opt = true}
+	}
 end)
