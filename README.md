@@ -1,1 +1,1 @@
-My dotfiles, meant to be used with gnu stow
+My dotfiles, meant to be used with gnu stow.
