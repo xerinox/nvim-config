@@ -115,7 +115,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-eval "$(zoxide init bash)"
 export PATH=${PATH}:~/nvim-linux64/bin
 . "$HOME/.cargo/env"
 export XDG_CONFIG_HOME=/home/xerinox/.config
+eval "$(zoxide init bash)"
