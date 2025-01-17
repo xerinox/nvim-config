@@ -44,8 +44,6 @@ return {
     },
     event = { 'VeryLazy' },
     config = function()
-        -- Load treesitter grammar for org
-        require('orgmode').setup_ts_grammar()
 
         -- Setup treesitter
         require('nvim-treesitter.configs').setup({
@@ -84,12 +82,16 @@ return {
             },
             org_agenda_files = { "~/notes/**/*" },
             org_default_notes_file = '~/notes/main.org',
-            org_todo_keywords = { 'TODO', 'NEXT', '|', 'DONE', 'CANCEL' },
+            org_archive_location = '~/notes/archive/%s_archive::',
+            org_todo_keywords = { 'TODO', 'NEXT', 'WAIT', '|', 'DONE', 'CANCEL' },
             win_split_mode = "float",
             org_todo_keyword_faces = {
+                WAIT = ':foreground orange :weight bold',
                 NEXT = ':foreground yellow :weight bold',
                 CANCEL = ':foreground magenta :weight bold'
             },
+            org_hide_leading_stars = true,
+            org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
             org_capture_templates = templates,
         })

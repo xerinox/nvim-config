@@ -10,7 +10,7 @@ return {
         -- REQUIRED
     end,
     keys = {
-        { "<leader>a", function() require('harpoon'):list():append() end, desc = "Add file to harpoon" },
+        { "<leader>a", function() require('harpoon'):list():add() end, desc = "Add file to harpoon" },
         {
             "<C-e>",
             function()
