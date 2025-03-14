@@ -1,6 +1,6 @@
 return {
     'nvim-telescope/telescope.nvim',
-    branch       = '0.1.x',
+    tag       = '0.1.8',
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-project.nvim' },
     config       = function()
         require('telescope').setup({
@@ -29,5 +29,11 @@ return {
             end,
             desc = "Grep files",
         },
+        { "<leader>pp", function()
+            local actions = require("CopilotChat.actions")
+
+            require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+        end,
+        desc = "Copilot chat in telescope"}
     }
 }

@@ -40,19 +40,14 @@ return {
         {
             'danilshvalov/org-modern.nvim',
             lazy = true,
+        },
+        {
+            "Saghen/blink.cmp"
         }
     },
     event = { 'VeryLazy' },
+    ft = { 'org' },
     config = function()
-
-        -- Setup treesitter
-        require('nvim-treesitter.configs').setup({
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = { 'org' },
-            },
-            ensure_installed = { 'org' },
-        })
         local Menu = require("org-modern.menu")
 
         -- Setup orgmode
@@ -94,6 +89,20 @@ return {
             org_blank_before_new_entry = { heading = true, plain_list_item = false },
 
             org_capture_templates = templates,
+        })
+        require("blink.cmp").setup({
+            sources = {
+                per_filetype = {
+                    org = {'orgmode'}
+                },
+                providers = {
+                    orgmode = {
+                        name = 'Orgmode',
+                        module = 'orgmode.org.autocompletion.blink',
+                        fallbacks = { 'buffer' }
+                    }
+                }
+            }
         })
     end,
 }

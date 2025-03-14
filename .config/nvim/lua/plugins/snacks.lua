@@ -4,14 +4,22 @@ return {
     priority = 1000,
     lazy = false,
     opts = {
+        animate = { enabled = true },
         bigfile = { enabled = true },
         dashboard = { enabled = true },
+        dim = { enabled = true },
+        gitbrowse = { enabled = true },
+        git = { enabled = true },
+        image = { enabled = true },
         indent = { enabled = true },
         input = { enabled = true },
         notifier = { enabled = true, timeout = 3000 },
         quickfile = { enabled = true },
+        scope = { enabled = true },
         scroll = { enabled = true },
         statuscolumn = { enabled = true },
+        toggle = { enabled = true },
+        terminal = { enabled = true },
         words = { enabled = true },
     },
     keys = {
@@ -74,7 +82,7 @@ return {
                     :map("<leader>uc")
                 Snacks.toggle.treesitter():map("<leader>uT")
                 Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map(
-                "<leader>ub")
+                    "<leader>ub")
                 Snacks.toggle.inlay_hints():map("<leader>uh")
                 Snacks.toggle.indent():map("<leader>ug")
                 Snacks.toggle.dim():map("<leader>uD")

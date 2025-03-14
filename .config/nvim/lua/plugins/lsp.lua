@@ -5,87 +5,29 @@ return {
         config = true,
     },
     {
-        'hrsh7th/nvim-cmp',
-        event = 'InsertEnter',
-        dependencies = {
-            { 'L3MON4D3/LuaSnip' },
-            { 'rafamadriz/friendly-snippets' },
-            { 'hrsh7th/cmp-buffer' },
-            { 'hrsh7th/cmp-path' },
-            { 'saadparwaiz1/cmp_luasnip' },
-        },
-        config = function()
-            local cmp = require("cmp")
-            local luasnip = require('luasnip')
-
-            require('luasnip.loaders.from_vscode').lazy_load()
-
-            local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-            cmp.setup({
-                preselect = 'item',
-                completion = {
-                    completeopt = 'menu, menuone, noinsert',
-                },
-                sources = {
-                    { name = 'nvim_lsp' },
-                    { name = 'buffer' },
-                    { name = 'path' },
-                    { name = 'luasnip' },
-                    { name = 'orgmode' },
-                },
-                mapping = cmp.mapping.preset.insert({
-                    ["<C-p>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_prev_item()
-                        elseif luasnip.jumpable(-1) then
-                            luasnip.jump(-1)
-                        elseif luasnip.expandable() then
-                            luasnip.expand()
-                        else
-                            fallback()
-                        end
-                    end),
-                    ["<C-n>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_next_item()
-                        elseif luasnip.jumpable(1) then
-                            luasnip.jump(1)
-                        elseif luasnip.expandable() then
-                            luasnip.expand()
-                        else
-                            fallback()
-                        end
-                    end),
-                    ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-                    ["<C-Space>"] = cmp.mapping.complete(),
-                })
-            })
-        end,
-    },
-    {
         'neovim/nvim-lspconfig',
         cmd = { 'LspInfo', 'LspInstall', 'LspStart' },
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
-            { 'hrsh7th/cmp-nvim-lsp' },
+            { "saghen/blink.cmp" },
             { 'williamboman/mason.nvim' },
             { 'williamboman/mason-lspconfig.nvim' },
-            { "https://git.sr.ht/~whynothugo/lsp_lines.nvim" },
         },
         opts = {
             inlay_hints = { enabled = true },
+            diagnostics = {
+                virtual_lines = true,
+                virtual_text = false
+            },
+            setup = {
+                rust_analyzer = function() return true end,
+            }
         },
         init = function()
             vim.opt.signcolumn = 'yes'
         end,
+
         config = function()
-            local lsp_defaults = require('lspconfig').util.default_config
-            lsp_defaults.capabilities = vim.tbl_deep_extend(
-                'force',
-                lsp_defaults.capabilities,
-                require('cmp_nvim_lsp').default_capabilities()
-            )
             vim.api.nvim_create_autocmd('LspAttach', {
                 desc = 'LSP actions',
                 callback = function(event)
@@ -110,11 +52,43 @@ return {
                         { buffer = opts.buffer, remap = false, desc = "Rename object(context aware" })
                     vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end,
                         { buffer = opts.buffer, remap = false, desc = "Signature help" })
-                    vim.keymap.set("n", "<leader>vh",
+                    vim.keymap.set("n", "<leader>h",
                         function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end)
+
+                    --rust
+
+                    vim.g.rustacejnvim = {
+                        tools = {
+                            float_win_config = {
+                                auto_focus = true,
+                            }
+                        },
+                        server = {
+                            capabilities = vim.lsp.protocol.make_client_capabilities(),
+                            ---@diagnostics disable-next-line: unused-local
+                            on_attach = function(client, bufnr)
+                                vim.keymap.set("n", "<leader>a", function()
+                                    vim.cmd.RustLsp "codeAction"
+                                end, { silent = true, buffer = bufnr, desc = "Code action" })
+
+                                vim.keymap.set("n", "<leader>d", function()
+                                    vim.cmd.RustLsp "openDocs"
+                                    vim.notify("Opening docs")
+                                end, { silent = true, buffer = bufnr, desc = "Open docs" })
+
+                                vim.keymap.set("n", "<leader>d", function()
+                                    vim.cmd.RustLsp "renderDiagnostic"
+                                end, { silent = true, buffer = bufnr, desc = "Render diagnostic" })
+
+                                vim.keymap.set("n", "<leader>i", function()
+                                    vim.cmd.RustLsp "explainError"
+                                end, { silent = true, buffer = bufnr, desc = "Explain error" })
+                            end,
+
+                        }
+                    }
                 end,
             })
-
 
             require('mason-lspconfig').setup({
                 ensure_installed = {
@@ -122,7 +96,6 @@ return {
                     "pylsp"
                 },
                 handlers = {
-
                     function(server_name)
                         require('lspconfig')[server_name].setup({})
                     end,
@@ -145,5 +118,80 @@ return {
                 }
             })
         end
-    }
+    },
+    {
+        "mfussenegger/nvim-dap",
+        lazy = false,
+        keys = function()
+            local dap = require("dap")
+            local widgets = require("dap.ui.widgets")
+            return {
+                {
+                    "<leader>ds",
+                    function() widgets.centered_float(widgets.scopes, { border = "rounded" }) end,
+                    desc = "DAP Scopes",
+                },
+                {
+                    "<F1>",
+                    function() widgets.hover(nil, { border = "rounded" }) end,
+                    desc = "DAP Hover",
+                },
+                { "<F4>",  dap.terminate,         desc = "DAP Terminate" },
+                { "<F5>",  dap.continue,          desc = "DAP Continue" },
+                { "<F6>",  dap.run_to_cursor,     desc = "Run to Cursor" },
+                { "<F9>",  dap.toggle_breakpoint, desc = "Toggle Breakpoint" },
+                { "<F10>", dap.step_over,         desc = "Step Over" },
+                { "<F11>", dap.step_into,         desc = "Step Into" },
+                { "<F12>", dap.step_out,          desc = "Step Out" },
+                { "<F17>", dap.run_last,          desc = "Run Last" },
+                {
+                    "<F21>",
+                    function()
+                        vim.ui.input(
+                            { prompt = "Breakpoint condition: " },
+                            function(input) dap.set_breakpoint(input) end
+                        )
+                    end,
+                    desc = "Conditional Breakpoint",
+                },
+                {
+                    "<A-r>",
+                    function() dap.repl.toggle(nil, "tab split") end,
+                    desc = "Toggle DAP REPL",
+                },
+            }
+        end,
+        config = function()
+            -- Signs
+            for _, group in pairs({
+                "DapBreakpoint",
+                "DapBreakpointCondition",
+                "DapBreakpointRejected",
+                "DapLogPoint",
+            }) do
+                vim.fn.sign_define(group, { text = "●", texthl = group })
+            end
+
+            -- Setup
+
+            -- Decides when and how to jump when stopping at a breakpoint
+            -- The order matters!
+            --
+            -- (1) If the line with the breakpoint is visible, don't jump at all
+            -- (2) If the buffer is opened in a tab, jump to it instead
+            -- (3) Else, create a new tab with the buffer
+            --
+            -- This avoid unnecessary jumps
+            require("dap").defaults.fallback.switchbuf = "usevisible,usetab,newtab"
+            require("dap").adapters.codelldb = {
+                type = "server",
+                port = "${port}",
+                executable = {
+                    command = "codelldb",
+                    args = { "--port", "${port}" }
+                }
+
+            }
+        end,
+    },
 }
