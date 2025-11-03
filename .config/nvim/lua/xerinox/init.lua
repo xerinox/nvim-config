@@ -1,3 +1,5 @@
 require("xerinox.defaults")
 require("xerinox.remap")
 require("xerinox.set")
+require("xerinox.workflow.jira")
+require("xerinox.workflow.lazydocker").setup()

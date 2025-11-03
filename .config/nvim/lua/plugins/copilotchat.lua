@@ -7,10 +7,12 @@ return {
             { "nvim-telescope/telescope.nvim" },
         },
         build = "make tiktoken",
-        opts = {
+opts = {
             question_header = "## User ",
             answer_header = "## Copilot ",
             error_header = "## Error ",
+            model = "claude-sonnet-4.5",
+            tools = "copilot",
             mappings = {
                 -- Use tab for completion
                 complete = {

@@ -7,41 +7,77 @@ return {
         animate = { enabled = true },
         bigfile = { enabled = true },
         dashboard = { enabled = true },
+        debug = { enabled = true },
         dim = { enabled = true },
-        gitbrowse = { enabled = true },
+        gh = {},
         git = { enabled = true },
+        gitbrowse = { enabled = true },
         image = { enabled = true },
         indent = { enabled = true },
         input = { enabled = true },
-        notifier = { enabled = true, timeout = 3000 },
+        keymap = { enabled = true },
+        notifier = { enabled = true, timeout = 5000 },
         quickfile = { enabled = true },
         scope = { enabled = true },
+        scratch = { enabled = true },
         scroll = { enabled = true },
         statuscolumn = { enabled = true },
         toggle = { enabled = true },
         terminal = { enabled = true },
         words = { enabled = true },
+        styles = {
+            notification = {
+                wo = { wrap = true }
+            }
+        }
     },
     keys = {
-        { "<leader>z",  function() Snacks.zen() end,                     desc = "Toggle Zen Mode" },
-        { "<leader>Z",  function() Snacks.zen.zoom() end,                desc = "Toggle Zoom" },
-        { "<leader>.",  function() Snacks.scratch() end,                 desc = "Toggle Scratch Buffer" },
-        { "<leader>S",  function() Snacks.scratch.select() end,          desc = "Select Scratch Buffer" },
-        { "<leader>n",  function() Snacks.notifier.show_history() end,   desc = "Notification History" },
-        { "<leader>bd", function() Snacks.bufdelete() end,               desc = "Delete Buffer" },
-        { "<leader>cR", function() Snacks.rename.rename_file() end,      desc = "Rename File" },
-        { "<leader>gB", function() Snacks.gitbrowse() end,               desc = "Git Browse",                  mode = { "n", "v" } },
-        { "<leader>gb", function() Snacks.git.blame_line() end,          desc = "Git Blame Line" },
-        { "<leader>gf", function() Snacks.lazygit.log_file() end,        desc = "Lazygit Current File History" },
-        { "<leader>gg", function() Snacks.lazygit() end,                 desc = "Lazygit" },
-        { "<leader>gl", function() Snacks.lazygit.log() end,             desc = "Lazygit Log (cwd)" },
-        { "<leader>un", function() Snacks.notifier.hide() end,           desc = "Dismiss All Notifications" },
-        { "<c-/>",      function() Snacks.terminal() end,                desc = "Toggle Terminal" },
-        { "<c-_>",      function() Snacks.terminal() end,                desc = "which_key_ignore" },
-        { "]]",         function() Snacks.words.jump(vim.v.count1) end,  desc = "Next Reference",              mode = { "n", "t" } },
-        { "[[",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference",              mode = { "n", "t" } },
+        { "<leader>z",  function() Snacks.zen() end,                              desc = "Toggle Zen Mode" },
+        { "<leader>Z",  function() Snacks.zen.zoom() end,                         desc = "Toggle Zoom" },
+        { "<leader>.",  function() Snacks.scratch() end,                          desc = "Toggle Scratch Buffer" },
+        { "<leader>S",  function() Snacks.scratch.select() end,                   desc = "Select Scratch Buffer" },
+        { "<leader>Nn", function() Snacks.notifier.show_history() end,            desc = "Notification History" },
+        { "<leader>bd", function() Snacks.bufdelete() end,                        desc = "Delete Buffer" },
+        { "<leader>cR", function() Snacks.rename.rename_file() end,               desc = "Rename File" },
+        { "<leader>gB", function() Snacks.gitbrowse() end,                        desc = "Git Browse",                  mode = { "n", "v" } },
+        { "<leader>gb", function() Snacks.git.blame_line() end,                   desc = "Git Blame Line" },
+        { "<leader>gf", function() Snacks.lazygit.log_file() end,                 desc = "Lazygit Current File History" },
+        { "<leader>gi", function() Snacks.picker.gh_issue() end,                  desc = "Github issues (open)" },
+        { "<leader>gI", function() Snacks.picker.gh_issue({ state = "all" }) end, desc = "Github Issues (all)" },
+        { "<leader>gp", function() Snacks.picker.gh_pr() end,                     desc = "Github Pull Requests (open)" },
+        { "<leader>gP", function() Snacks.picker.gh_pr({ state = "all" }) end,    desc = "Github Pull Requests (all)" },
+        { "<leader>gg", function() Snacks.lazygit() end,                          desc = "Lazygit" },
+        { "<leader>gl", function() Snacks.lazygit.log() end,                      desc = "Lazygit Log (cwd)" },
+        { "<leader>un", function() Snacks.notifier.hide() end,                    desc = "Dismiss All Notifications" },
+        { "<c-/>",      function() Snacks.terminal() end,                         desc = "Toggle Terminal" },
+        { "<c-_>",      function() Snacks.terminal() end,                         desc = "which_key_ignore" },
+        { "]]",         function() Snacks.words.jump(vim.v.count1) end,           desc = "Next Reference",              mode = { "n", "t" } },
+        { "[[",         function() Snacks.words.jump(-vim.v.count1) end,          desc = "Prev Reference",              mode = { "n", "t" } },
         {
-            "<leader>N",
+            "<leader>ld",
+            function()
+                local git_root = vim.fn.trim(vim.fn.system("git rev-parse --show-toplevel"))
+                if vim.v.shell_error ~= 0 then
+                    vim.notify("Not inside a git repository", vim.log.levels.ERROR)
+                    git_root = nil
+                end
+
+                local opts = {
+                    cwd = git_root,
+                    win = {
+                        border = "double",
+                        relative = "editor",
+                        width = math.floor(vim.o.columns * 0.8),
+                        height = math.floor(vim.o.lines * 0.8),
+                    }
+                }
+                Snacks.terminal.open("lazydocker", opts)
+            end,
+            desc = "LazyDocker",
+            mode = { "n" }
+        },
+        {
+            "<leader>NN",
             desc = "Neovim News",
             function()
                 Snacks.win({

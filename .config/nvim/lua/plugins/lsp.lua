@@ -1,6 +1,11 @@
+-- Hard block nvim-lspconfig from setting up rust_analyzer
+pcall(function()
+  local lspconfig = require("lspconfig")
+  lspconfig.rust_analyzer = nil
+end)
 return {
     {
-        'williamboman/mason.nvim',
+        'mason-org/mason.nvim',
         lazy = false,
         config = true,
     },
@@ -10,8 +15,8 @@ return {
         event = { 'BufReadPre', 'BufNewFile' },
         dependencies = {
             { "saghen/blink.cmp" },
-            { 'williamboman/mason.nvim' },
-            { 'williamboman/mason-lspconfig.nvim' },
+            { 'mason-org/mason.nvim' },
+            { 'mason-org/mason-lspconfig.nvim' },
         },
         opts = {
             inlay_hints = { enabled = true },
@@ -19,9 +24,12 @@ return {
                 virtual_lines = true,
                 virtual_text = false
             },
+            servers = {
+                rust_analyzer = false,
+            },
             setup = {
                 rust_analyzer = function() return true end,
-            }
+            },
         },
         init = function()
             vim.opt.signcolumn = 'yes'
@@ -55,65 +63,32 @@ return {
                     vim.keymap.set("n", "<leader>h",
                         function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end)
 
-                    --rust
-
-                    vim.g.rustacejnvim = {
-                        tools = {
-                            float_win_config = {
-                                auto_focus = true,
-                            }
-                        },
-                        server = {
-                            capabilities = vim.lsp.protocol.make_client_capabilities(),
-                            ---@diagnostics disable-next-line: unused-local
-                            on_attach = function(client, bufnr)
-                                vim.keymap.set("n", "<leader>a", function()
-                                    vim.cmd.RustLsp "codeAction"
-                                end, { silent = true, buffer = bufnr, desc = "Code action" })
-
-                                vim.keymap.set("n", "<leader>d", function()
-                                    vim.cmd.RustLsp "openDocs"
-                                    vim.notify("Opening docs")
-                                end, { silent = true, buffer = bufnr, desc = "Open docs" })
-
-                                vim.keymap.set("n", "<leader>d", function()
-                                    vim.cmd.RustLsp "renderDiagnostic"
-                                end, { silent = true, buffer = bufnr, desc = "Render diagnostic" })
-
-                                vim.keymap.set("n", "<leader>i", function()
-                                    vim.cmd.RustLsp "explainError"
-                                end, { silent = true, buffer = bufnr, desc = "Explain error" })
-                            end,
-
-                        }
-                    }
+                    -- rust keymaps are now set in rustaceanvim config
                 end,
             })
 
             require('mason-lspconfig').setup({
                 ensure_installed = {
-                    "rust_analyzer",
                     "pylsp"
                 },
                 handlers = {
                     function(server_name)
-                        require('lspconfig')[server_name].setup({})
+                        vim.lsp.enable(server_name)
                     end,
                     rust_analyzer = function()
                     end,
 
                     lua_ls = function()
-                        require('lspconfig').lua_ls.setup({
+                        vim.lsp.config("lua_ls", {
                             settings = {
                                 Lua = {
                                     diagnostics = {
-                                        globals = {
-                                            'vim'
-                                        }
+                                        globals = { 'vim' }
                                     }
                                 }
                             }
                         })
+                        vim.lsp.enable({"lua_ls"})
                     end
                 }
             })
@@ -122,6 +97,11 @@ return {
     {
         "mfussenegger/nvim-dap",
         lazy = false,
+        dependencies = {
+            "nvim-neotest/nvim-nio",
+            "rcarriga/nvim-dap-ui",
+            "theHamsta/nvim-dap-virtual-text",
+        },
         keys = function()
             local dap = require("dap")
             local widgets = require("dap.ui.widgets")
@@ -190,8 +170,20 @@ return {
                     command = "codelldb",
                     args = { "--port", "${port}" }
                 }
-
             }
+            require("dap").configurations.rust = {
+                {
+                    name = "Launch file",
+                    type = "codelldb",
+                    request = "launch",
+                    program = function()
+                        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+                    end,
+                    cwd = "${workspaceFolder}",
+                    stopOnEntry = false,
+                }
+            }
+            require("dapui").setup({})
         end,
     },
 }

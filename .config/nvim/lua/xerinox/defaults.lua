@@ -7,15 +7,21 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
     callback = setbufsettings
 })
 function ColorMyPencils(color)
-	color = color or "rose-pine"
+	color = color or "kanso"
 	vim.cmd.colorscheme(color)
 
-	vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+if vim.g.neovide then
+    vim.g.neovide_opacity = 0.8
+    vim.g.neovide_normal_opacity = 0.8
+    vim.g.neovide_cursor_animation_length = 0.05
+end
+
+--    vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+-- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 end
 
 if vim.g.neovide then
-    vim.g.neovide_transparency = 0.8
-    vim.g.neovide_normal_opacity = 0.8
+    vim.g.neovide_opacity = 0.1
+    vim.g.neovide_normal_transparency = 0.1
     vim.g.neovide_cursor_animation_length = 0.05
 end

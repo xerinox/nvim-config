@@ -1,7 +1,7 @@
 return {
     'saghen/blink.cmp',
     -- optional: provides snippets for the snippet source
-    dependencies = { 'rafamadriz/friendly-snippets', "giuxtaposition/blink-cmp-copilot", {'L3MON4D3/LuaSnip', run = "make install_jsregexp"}, version = 'v2.*' },
+    dependencies = { 'rafamadriz/friendly-snippets', "giuxtaposition/blink-cmp-copilot", { 'L3MON4D3/LuaSnip', run = "make install_jsregexp" }, version = 'v2.*' },
 
     -- use a release tag to download pre-built binaries
     version = '*',
@@ -19,6 +19,7 @@ return {
         -- See the full "keymap" documentation for information on defining your own keymap.
         keymap = { preset = 'default' },
         snippets = { preset = 'luasnip' },
+        enabled = function() return not vim.tbl_contains({ "markdown", "typr" }, vim.bo.filetype) end,
 
         appearance = {
             -- Sets the fallback highlight groups to nvim-cmp's highlight groups
@@ -67,7 +68,15 @@ return {
         -- elsewhere in your config, without redefining it, due to `opts_extend`
         sources = {
             default = { 'lsp', 'path', 'snippets', 'buffer', "copilot" },
+            per_filetype = {
+                org = { 'orgmode' }
+            },
             providers = {
+                orgmode = {
+                    name = 'Orgmode',
+                    module = 'orgmode.org.autocompletion.blink',
+                    fallbacks = { 'buffer' }
+                },
                 copilot = {
                     name = "copilot",
                     module = "blink-cmp-copilot",
