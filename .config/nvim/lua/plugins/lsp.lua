@@ -1,8 +1,3 @@
--- Hard block nvim-lspconfig from setting up rust_analyzer
-pcall(function()
-  local lspconfig = require("lspconfig")
-  lspconfig.rust_analyzer = nil
-end)
 return {
     {
         'mason-org/mason.nvim',
@@ -61,7 +56,27 @@ return {
                     vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end,
                         { buffer = opts.buffer, remap = false, desc = "Signature help" })
                     vim.keymap.set("n", "<leader>h",
-                        function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end)
+                        function()
+                            local bufnr = vim.api.nvim_get_current_buf()
+                            local clients = vim.lsp.get_clients({ bufnr = bufnr })
+                            
+                            -- Check if any attached client supports inlay hints
+                            local has_inlay_hints = false
+                            for _, client in ipairs(clients) do
+                                if client.server_capabilities.inlayHintProvider then
+                                    has_inlay_hints = true
+                                    break
+                                end
+                            end
+                            
+                            if has_inlay_hints then
+                                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+                                print("Inlay hints " .. (vim.lsp.inlay_hint.is_enabled() and "enabled" or "disabled"))
+                            else
+                                print("No LSP client with inlay hint support attached")
+                            end
+                        end,
+                        { buffer = opts.buffer, remap = false, desc = "Toggle inlay hints" })
 
                     -- rust keymaps are now set in rustaceanvim config
                 end,
@@ -69,17 +84,27 @@ return {
 
             require('mason-lspconfig').setup({
                 ensure_installed = {
-                    "pylsp"
+                    "pylsp",
+                    "rust_analyzer"
+                },
+                automatic_installation = true,
+                automatic_enable = {
+                    exclude = { "rust_analyzer" }
                 },
                 handlers = {
                     function(server_name)
-                        vim.lsp.enable(server_name)
-                    end,
-                    rust_analyzer = function()
+                        local capabilities = require('blink.cmp').get_lsp_capabilities()
+                        require('lspconfig')[server_name].setup({
+                            capabilities = capabilities,
+                        })
                     end,
 
+                    rust_analyzer = function() end,
+
                     lua_ls = function()
-                        vim.lsp.config("lua_ls", {
+                        local capabilities = require('blink.cmp').get_lsp_capabilities()
+                        require('lspconfig').lua_ls.setup({
+                            capabilities = capabilities,
                             settings = {
                                 Lua = {
                                     diagnostics = {
@@ -88,102 +113,9 @@ return {
                                 }
                             }
                         })
-                        vim.lsp.enable({"lua_ls"})
                     end
                 }
             })
         end
-    },
-    {
-        "mfussenegger/nvim-dap",
-        lazy = false,
-        dependencies = {
-            "nvim-neotest/nvim-nio",
-            "rcarriga/nvim-dap-ui",
-            "theHamsta/nvim-dap-virtual-text",
-        },
-        keys = function()
-            local dap = require("dap")
-            local widgets = require("dap.ui.widgets")
-            return {
-                {
-                    "<leader>ds",
-                    function() widgets.centered_float(widgets.scopes, { border = "rounded" }) end,
-                    desc = "DAP Scopes",
-                },
-                {
-                    "<F1>",
-                    function() widgets.hover(nil, { border = "rounded" }) end,
-                    desc = "DAP Hover",
-                },
-                { "<F4>",  dap.terminate,         desc = "DAP Terminate" },
-                { "<F5>",  dap.continue,          desc = "DAP Continue" },
-                { "<F6>",  dap.run_to_cursor,     desc = "Run to Cursor" },
-                { "<F9>",  dap.toggle_breakpoint, desc = "Toggle Breakpoint" },
-                { "<F10>", dap.step_over,         desc = "Step Over" },
-                { "<F11>", dap.step_into,         desc = "Step Into" },
-                { "<F12>", dap.step_out,          desc = "Step Out" },
-                { "<F17>", dap.run_last,          desc = "Run Last" },
-                {
-                    "<F21>",
-                    function()
-                        vim.ui.input(
-                            { prompt = "Breakpoint condition: " },
-                            function(input) dap.set_breakpoint(input) end
-                        )
-                    end,
-                    desc = "Conditional Breakpoint",
-                },
-                {
-                    "<A-r>",
-                    function() dap.repl.toggle(nil, "tab split") end,
-                    desc = "Toggle DAP REPL",
-                },
-            }
-        end,
-        config = function()
-            -- Signs
-            for _, group in pairs({
-                "DapBreakpoint",
-                "DapBreakpointCondition",
-                "DapBreakpointRejected",
-                "DapLogPoint",
-            }) do
-                vim.fn.sign_define(group, { text = "●", texthl = group })
-            end
-
-            -- Setup
-
-            -- Decides when and how to jump when stopping at a breakpoint
-            -- The order matters!
-            --
-            -- (1) If the line with the breakpoint is visible, don't jump at all
-            -- (2) If the buffer is opened in a tab, jump to it instead
-            -- (3) Else, create a new tab with the buffer
-            --
-            -- This avoid unnecessary jumps
-            require("dap").defaults.fallback.switchbuf = "usevisible,usetab,newtab"
-            require("dap").adapters.codelldb = {
-                type = "server",
-                port = "${port}",
-                executable = {
-                    command = "codelldb",
-                    args = { "--port", "${port}" }
-                }
-            }
-            require("dap").configurations.rust = {
-                {
-                    name = "Launch file",
-                    type = "codelldb",
-                    request = "launch",
-                    program = function()
-                        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-                    end,
-                    cwd = "${workspaceFolder}",
-                    stopOnEntry = false,
-                }
-            }
-            require("dapui").setup({})
-        end,
     },
 }
