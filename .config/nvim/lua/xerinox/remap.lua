@@ -34,9 +34,8 @@ vim.keymap.set("n", "<leader><C-k>", "<cmd>lnext<CR>zz", {desc = "Next location"
 vim.keymap.set("n", "<leader><C-j>", "<cmd>lprev<CR>zz", {desc = "Previous location"})
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], {desc = "Search and replace"})
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true, desc = "make file executable"})
+vim.keymap.set("n", "<leader>X", "<cmd>!chmod +x %<CR>", { silent = true, desc = "make file executable"})
 
 vim.keymap.set("i", "jk", "<Esc>")
 -- Keybindings for Neovim's built-in diff mode
 -- This uses the standard vim.keymap.set() API and will always work.
-

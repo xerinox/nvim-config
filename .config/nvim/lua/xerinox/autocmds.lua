@@ -1,0 +1,1 @@
+-- Autocmds (dynamic colorscheme switching removed)

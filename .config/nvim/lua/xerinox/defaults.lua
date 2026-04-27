@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
     callback = setbufsettings
 })
 function ColorMyPencils(color)
-	color = color or "kanso"
+	color = color or "zenbones"
 	vim.cmd.colorscheme(color)
 
 if vim.g.neovide then
@@ -20,8 +20,9 @@ end
 -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 end
 
-if vim.g.neovide then
-    vim.g.neovide_opacity = 0.1
-    vim.g.neovide_normal_transparency = 0.1
-    vim.g.neovide_cursor_animation_length = 0.05
+function SetupUndoTree()
+    vim.cmd("packadd nvim.undotree")
+    vim.keymap.set("n", "<leader>u", require("undotree").open)
 end
+
+SetupUndoTree()
